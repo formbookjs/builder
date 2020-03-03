@@ -1,8 +1,8 @@
 module.exports = {
-  transpileDependencies: ["vuetify"],
+  transpileDependencies: ['vuetify'],
 
   pluginOptions: {
     lintStyleOnBuild: true,
-    stylelint: {}
-  }
+    stylelint: {},
+  },
 };

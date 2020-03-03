@@ -22,7 +22,7 @@
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col>
-            <v-card style="min-height: 50px">
+            <v-card style="min-height: 50px;">
               <nested-draggable :children="list2" />
             </v-card>
           </v-col>
