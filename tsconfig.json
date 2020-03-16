@@ -13,11 +13,15 @@
     "types": [
       "webpack-env",
       "jest",
-      "vuetify"
+      "vuetify",
+      "node"
     ],
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "formBookConfig": [
+        "formbook.config.js"
       ]
     },
     "lib": [

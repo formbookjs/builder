@@ -4,8 +4,17 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import './plugins/vuedraggable';
+import './lib/framwork';
+import './plugins/vue-composition-api'
+import Form from "@/store/models/Form";
 
 Vue.config.productionTip = false;
+
+Form.create({
+  data: {
+    name: 'Test Form',
+  },
+});
 
 new Vue({
   router,

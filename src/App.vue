@@ -4,7 +4,9 @@
       <draggable
         class="dragArea list-group"
         :list="list1"
-        :group="{ name: 'people', pull: 'clone', put: false }"
+        :group="{ name: 'people', pull: 'clone', put: true }"
+        chosen-class="chosen"
+        :move="moving"
         @end="itemId++"
       >
         <v-btn v-for="element in list1" :key="element.name" class="list-group-item">
@@ -23,11 +25,11 @@
         <v-row align="center" justify="center">
           <v-col>
             <v-card style="min-height: 50px;">
-              <nested-draggable :children="list2" />
+              <nested-draggable :children="usedForm.structure" />
             </v-card>
           </v-col>
         </v-row>
-        {{ list2 }}
+        {{ usedForm.structure }}
       </v-container>
     </v-content>
 
@@ -41,6 +43,7 @@
 import Vue from 'vue';
 import { computed, ref } from '@vue/composition-api';
 import nestedDraggable from '@/components/NestedDraggable/NestedDraggable.vue';
+import Form from '@/store/models/Form';
 
 export default Vue.extend({
   components: {
@@ -49,30 +52,49 @@ export default Vue.extend({
   setup() {
     const drawer = ref(false);
     const itemId = ref(0);
-    const list2 = ref([]);
+
+    const usedForm = computed(() => {
+      return Form.query().first() || {structure: []};
+    });
     const list1 = computed(() => {
       return [
         {
-          id: itemId,
-          name: 'v-row',
+          id: itemId.value,
+          name: 'VRow',
+          dragAreaClasses: ['row'],
           props: [],
           children: [],
         },
         {
-          id: itemId,
-          name: 'v-col',
+          id: itemId.value,
+          name: 'VCol',
           props: [],
           children: [],
         },
       ];
     });
+    const moving = (evt: any) => {
+      // const items = document.querySelectorAll('.drag-hover');
+      // items.forEach(item => {
+      //   item.classList.remove('drag-hover');
+      // });
+      // evt.to.classList.add('drag-hover');
+    };
 
     return {
       drawer,
       itemId,
       list1,
-      list2,
+      usedForm,
+      moving,
     };
   },
 });
 </script>
+
+<style>
+.chosen {
+  color: #fff;
+  background-color: #c00;
+}
+</style>
