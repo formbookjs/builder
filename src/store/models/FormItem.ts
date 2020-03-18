@@ -11,7 +11,7 @@ export default class FormItem extends Model {
       name: this.attr(''),
       structure: this.attr([]),
       is_nestable: this.attr(false),
-      form_items: this.hasMany(FormItem, 'form_item_id')
+      form_items: this.hasMany(FormItem, 'form_item_id'),
     };
   }
 }

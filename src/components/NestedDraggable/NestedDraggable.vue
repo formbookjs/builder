@@ -95,7 +95,7 @@ export default Vue.extend({
     const changing = (data: any) => {
       console.log('change', data);
     };
-    const removeItem = (idx: string|number) => {
+    const removeItem = (idx: string | number) => {
       FormItem.delete(idx);
     };
 

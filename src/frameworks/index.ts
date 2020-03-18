@@ -1,5 +1,5 @@
-import vuetifyComponents from './vuetify'
+import vuetifyComponents from './vuetify';
 
 export default {
-    'vuetify': vuetifyComponents
-}
+  vuetify: vuetifyComponents,
+};
