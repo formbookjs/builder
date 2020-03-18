@@ -4,10 +4,11 @@
       <draggable
         class="dragArea list-group"
         :list="list1"
-        :group="{ name: 'people', pull: 'clone', put: true }"
+        :group="{ name: 'people', pull: 'clone', put: false }"
         chosen-class="chosen"
         :move="moving"
-        @end="itemId++"
+        @clone="cloning"
+        @end="ending"
       >
         <v-btn v-for="element in list1" :key="element.name" class="list-group-item">
           {{ element.name }}
@@ -25,11 +26,11 @@
         <v-row align="center" justify="center">
           <v-col>
             <v-card style="min-height: 50px;">
-              <nested-draggable :children="usedForm.structure" />
+              <nested-draggable />
             </v-card>
           </v-col>
         </v-row>
-        {{ usedForm.structure }}
+        {{ usedForm }}
       </v-container>
     </v-content>
 
@@ -43,36 +44,39 @@
 import Vue from 'vue';
 import { computed, ref } from '@vue/composition-api';
 import nestedDraggable from '@/components/NestedDraggable/NestedDraggable.vue';
-import Form from '@/store/models/Form';
+import { toMappedJson } from '@/lib/jsonGenerator';
 
 export default Vue.extend({
   components: {
     nestedDraggable,
   },
-  setup() {
+  setup(props, { root: { $store } }) {
     const drawer = ref(false);
     const itemId = ref(0);
 
     const usedForm = computed(() => {
-      return Form.query().first() || {structure: []};
+      return toMappedJson('$uid1');
     });
     const list1 = computed(() => {
       return [
         {
-          id: itemId.value,
           name: 'VRow',
           dragAreaClasses: ['row'],
           props: [],
-          children: [],
         },
         {
-          id: itemId.value,
           name: 'VCol',
           props: [],
-          children: [],
         },
       ];
     });
+    const cloning = (item: any) => {
+      return item;
+    };
+    const ending = (evt: any) => {
+      itemId.value++;
+      console.log('ending', evt);
+    };
     const moving = (evt: any) => {
       // const items = document.querySelectorAll('.drag-hover');
       // items.forEach(item => {
@@ -87,6 +91,8 @@ export default Vue.extend({
       list1,
       usedForm,
       moving,
+      cloning,
+      ending,
     };
   },
 });

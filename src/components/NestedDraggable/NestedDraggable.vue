@@ -2,14 +2,14 @@
   <draggable
     :class="['dragArea', ...dragAreaClasses]"
     tag="div"
-    :list="children"
+    v-model="items"
     :group="{ name: 'people' }"
-    :move="moving"
     handle=".drag-handle"
     :invert-swap="true"
     ghost-class="ghost"
     chosen-class="chosen"
     @mouseleave="leaving"
+    @change="changing"
   >
     <component
       :is="getComponent(el.name)"
@@ -28,11 +28,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-system-bar>
-        <nested-draggable
-          v-if="el.children"
-          :children="el.children"
-          :drag-area-classes="el.dragAreaClasses"
-        />
+        <nested-draggable :parent-id="el.id" :drag-area-classes="el.dragAreaClasses" />
       </v-sheet>
     </component>
   </draggable>
@@ -41,7 +37,8 @@
 import draggable from 'vuedraggable';
 import Vue from 'vue';
 import { components } from '@/lib/framwork';
-import {inject, onMounted, reactive, ref} from "@vue/composition-api";
+import { computed, inject, onMounted, reactive, ref } from '@vue/composition-api';
+import FormItem from '@/store/models/FormItem';
 
 export default Vue.extend({
   name: 'NestedDraggable',
@@ -49,38 +46,64 @@ export default Vue.extend({
     draggable,
   },
   props: {
-    children: Array,
+    parentId: {
+      type: [Number, String],
+      default: () => null,
+    },
     dragAreaClasses: {
       type: Array,
       default: () => ['d-inline-block'],
     },
   },
-  setup({ children }) {
-    const items: any = ref([]);
+  setup({ parentId }) {
+    const items: any = computed({
+      get: (): Array<string> => {
+        return FormItem.query()
+          .where('form_item_id', parentId)
+          .where('form_id', parentId ? null : '$uid1')
+          .get()
+          .map((formItem: any) => {
+            formItem.structure.id = formItem.id;
+            return formItem.structure;
+          });
+      },
+      set: (formItems: any) => {
+        const items = formItems.map((item: any) => {
+          const formItem: any = {};
+          formItem.structure = item;
+          /* eslint-disable-next-line @typescript-eslint/camelcase */
+          formItem.form_item_id = parentId;
+          /* eslint-disable-next-line @typescript-eslint/camelcase */
+          formItem.form_id = parentId ? null : '$uid1';
+          if (item.id) {
+            formItem.id = item.id;
+          }
+          return formItem;
+        });
+        FormItem.insertOrUpdate({
+          data: items,
+        });
+        // console.log('setting', formItem);
+      },
+    });
     const getComponent = (compName: string) => {
       return components['grid'][compName];
     };
-    const moving = (data: any) => {
-      console.log(data);
-    };
-
     const leaving = (data: any) => {
       console.log(data);
     };
-    const removeItem = (idx: any) => {
-      console.log(idx);
-      // items.value.splice(idx, 1);
+    const changing = (data: any) => {
+      console.log('change', data);
     };
-
-    onMounted(() => {
-      items.value = children;
-    });
+    const removeItem = (idx: string|number) => {
+      FormItem.delete(idx);
+    };
 
     return {
       getComponent,
-      moving,
       leaving,
       removeItem,
+      changing,
       items,
       // nestedDraggableClasses,
     };
