@@ -6,3 +6,5 @@ declare module '@/formBook/formbook.config' {
     componentFramework: ComponentFrameworks;
   }
 }
+
+declare module 'v-jsoneditor'

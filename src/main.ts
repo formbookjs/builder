@@ -6,15 +6,9 @@ import vuetify from './plugins/vuetify';
 import './plugins/vuedraggable';
 import './lib/framwork';
 import './plugins/vue-composition-api';
-import Form from '@/store/models/Form';
+// import './plugins/v-jsoneditor';
 
 Vue.config.productionTip = false;
-
-Form.create({
-  data: {
-    name: 'Test Form',
-  },
-});
 
 new Vue({
   router,

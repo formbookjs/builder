@@ -1,6 +1,6 @@
 <template>
   <draggable
-    :class="['dragArea', ...dragAreaClasses]"
+    :class="['fill-height', 'dragArea', ...dragAreaClasses]"
     tag="div"
     v-model="items"
     :group="{ name: 'people' }"
@@ -52,15 +52,16 @@ export default Vue.extend({
     },
     dragAreaClasses: {
       type: Array,
-      default: () => ['d-inline-block'],
+      default: () => [],
     },
   },
-  setup({ parentId }) {
+  setup({ parentId }, { root }) {
+    const formId = parentId ? null : root.$route.params.formId;
     const items: any = computed({
       get: (): Array<string> => {
         return FormItem.query()
           .where('form_item_id', parentId)
-          .where('form_id', parentId ? null : '$uid1')
+          .where('form_id', formId)
           .get()
           .map((formItem: any) => {
             formItem.structure.id = formItem.id;
@@ -69,12 +70,13 @@ export default Vue.extend({
       },
       set: (formItems: any) => {
         const items = formItems.map((item: any) => {
+          console.log('setting', item)
           const formItem: any = {};
           formItem.structure = item;
           /* eslint-disable-next-line @typescript-eslint/camelcase */
           formItem.form_item_id = parentId;
           /* eslint-disable-next-line @typescript-eslint/camelcase */
-          formItem.form_id = parentId ? null : '$uid1';
+          formItem.form_id = formId;
           if (item.id) {
             formItem.id = item.id;
           }
@@ -87,7 +89,7 @@ export default Vue.extend({
       },
     });
     const getComponent = (compName: string) => {
-      return components['grid'][compName];
+      return components[compName];
     };
     const leaving = (data: any) => {
       console.log(data);

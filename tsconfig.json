@@ -14,7 +14,8 @@
       "webpack-env",
       "jest",
       "vuetify",
-      "node"
+      "node",
+      "jsoneditor"
     ],
     "paths": {
       "@/*": [

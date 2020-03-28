@@ -7,7 +7,10 @@ export default class Form extends Model {
   static fields() {
     return {
       id: this.uid(),
-      name: this.attr(''),
+      directory_id: this.attr(null),
+      name: this.attr('Formular'),
+      type: this.attr('form'),
+      icon: this.attr('fa-journal-whills'),
       structure: this.attr([]),
       form_items: this.hasMany(FormItem, 'form_id'),
     };
